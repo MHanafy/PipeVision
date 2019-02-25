@@ -49,6 +49,7 @@ namespace PipeVision.Domain
             StageName = updated.StageName;
             StageCounter = updated.StageCounter;
             Agent = updated.Agent;
+            LogStatus = updated.LogStatus;
             Tests.Apply<Test, Tuple<int, string>>(updated.Tests);
         }
 
@@ -58,6 +59,7 @@ namespace PipeVision.Domain
         public DateTime StartDate{get;set;}
         public DateTime EndDate{get;set;}
         public TestType TestType{get;set;}
+        public LogStatus LogStatus { get; set; }
         public string Result{get;set;}
         public string StageName{get;set;}
         public int StageCounter{get;set;}

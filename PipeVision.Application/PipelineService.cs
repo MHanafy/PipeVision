@@ -36,27 +36,44 @@ namespace PipeVision.Application
         /// Returns a list of all test failures since last known success, with change lists populated
         /// </summary>
         /// <param name="testName"></param>
-        /// <param name="keepRedundant">When set to default of false, redundant test runs are omitted, that's runs that fail with the same error consequently</param>
         /// <returns></returns>
-        public async Task<IEnumerable<Test>> GetTestFailures(string testName, bool keepRedundant = false)
+        public async Task<IEnumerable<Test>> GetTestFailures(string testName)
         {
             var timer = new Stopwatch();
             timer.Start();
-            var tests = (await _testRepository.GetTestRunsSinceLastSuccess(testName)).ToList();
+            var tests = (await _testRepository.GetTestRunsSinceLastSuccess(testName));
             timer.Stop();
             _logger.LogInformation($"Retrieved test failure for '{testName}' : {timer.ElapsedMilliseconds} ms");
-            if(keepRedundant) return tests;
-            var result= new List<Test>();
-            //below assumes the list is already in a descending order
-            string lastError = null;
-            for (var i = tests.Count -1; i >= 0; i--)
-            {
-                if (tests[i].Error == lastError) continue;
-                result.Add(tests[i]);
-                lastError = tests[i].Error;
-            }
-            return result.OrderByDescending(x=>x.PipelineJob.StartDate);
+            return tests;
         }
 
+        public async Task<List<(Test test, int Count)>> GetUniqueTestFailures(string testName)
+        {
+            var tests = (await GetTestFailures(testName)).ToList();
+            var result= new List<(Test test, int Count)>();
+            //below assumes the list is already in a descending order
+            (Test test, int Count) current = (null, 0);
+            for (var i = tests.Count -1; i >= 0; i--)
+            {
+                if (tests[i].Error == current.test?.Error)
+                {
+                    current.Count++;
+                    continue;
+                }
+
+                if (current.test != null) result.Add(current);
+                current = (tests[i], 1);
+            }
+            if (current.test != null) result.Add(current);
+
+            result.Reverse();
+            return result;
+
+        }
+
+        public Task<DateTime?> GetLastSuccessDate(string testName)
+        {
+            return _testRepository.GetLastSuccessDate(testName);
+        }
     }
 }

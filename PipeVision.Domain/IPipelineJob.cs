@@ -3,6 +3,15 @@ using System.Collections.Generic;
 
 namespace PipeVision.Domain
 {
+    public enum LogStatus
+    {
+        Unknown,
+        Parsed,
+        NotTestsFound,
+        NotFound,
+        NoParserFound
+    }
+
     public interface IPipelineJob : IApplicable<PipelineJob, int>
     {
         DateTime EndDate { get; set; }
@@ -15,6 +24,7 @@ namespace PipeVision.Domain
         DateTime StartDate { get; set; }
         List<Test> Tests { get; set; }
         TestType TestType { get; set; }
+        LogStatus LogStatus { get; set; }
 
         PipelineJob Clone();
     }

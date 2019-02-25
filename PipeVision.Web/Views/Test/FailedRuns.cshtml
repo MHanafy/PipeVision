@@ -5,73 +5,83 @@
 	Layout = "_Layout";
 }
 
-<div class="page-header">
-	<h2>@Model.Test.ShortName<small> Failure history</small></h2>
-	<div class="row">
-		<div class="col-sm-1">Test Name</div>
-		<div class="col-sm-11 text-primary">@Model.Test.Name</div>
+@if (ViewBag.LastSuccessDate != null)
+{
+	<div class="page-header">
+		<h2>@ViewBag.TestName</h2>
+		<h3 class="text-success text-center">Last known status is <strong>Success</strong>, as of @ViewBag.LastSuccessDate.ToString("dd/MM/yyyy HH:mm")</h3>
 	</div>
-	<div class="row">
-		<h5 class="col-sm-1">Pipeline:</h5>
-		<h5 class="col-sm-3"><strong>@Model.Test.PipelineName</strong></h5>
-		<h5 class="col-sm-1">Stage:</h5>
-		<h5 class="col-sm-3"><strong>@Model.Test.StageName</strong></h5>
-		<h5 class="col-sm-1">Job:</h5>
-		<h5 class="col-sm-3"><strong>@Model.Test.JobName</strong></h5>
-	</div>
-</div>
-
-<div class="panel-group">
-@foreach (var r in Model.TestRuns)
-	{
-		<div class="panel panel-danger">
-			<div class="panel-heading text-capitalize">@r.Error</div>
-			<div class="panel-body">
-				<div class="row">
-					<div class="col-sm-1"><strong>Agent</strong></div>
-					<div class="col-sm-3 text-uppercase">@r.Agent</div>
-					<div class="col-sm-1"><strong>Start Time</strong></div>
-					<div class="col-sm-3">@r.StartTime.ToString("dd/MMM/yyyy HH:mm")</div>
-					<div class="col-sm-1"><strong>Duration (S)</strong></div>
-					<div class="col-sm-3">@Math.Round(r.Duration.TotalSeconds, 1)</div>
-				</div>
-				<div class="row">
-					<div class="col-sm-1"><strong>Call stack</strong></div>
-					<span class="col-sm-11"><code>@r.CallStack</code></span>
-				</div>
-				<div class="row">
-					<div class="col-sm-2"><strong>Change lists</strong></div>
-
-					<table class="table-condensed table-striped col-sm-11 col-sm-offset-1">
-						<thead>
-						<tr>
-							<th>Id</th>
-							<th>User Name</th>
-							<th>Comment</th>
-							<th class="visible-lg">Date</th>
-						</tr>
-						</thead>
-						<tbody>
-						@foreach (var c in r.ChangeLists)
-						{
-							<tr>
-								<td class="col-md-1">@c.Id</td>
-								<td class="col-md-2">@c.UserName</td>
-								<td class="col-md-8 col-lg-6">@c.Comment</td>
-								<td class="visible-lg col-lg-2">@c.ModifiedDate.ToString("dd/MMM/yyyy HH:mm")</td>
-							</tr>
-						}
-						</tbody>
-					</table>
-				</div>
-			</div>
-
-			@*<div class="row">
-				<div class="col-sm-2">Error</div>
-				<div class="col-sm-10 text-danger"></div>
-			</div>*@
-
-
+}
+else
+{
+	<div class="page-header">
+		<h2>@Model.Test.ShortName<small> Failure history</small></h2>
+		<div class="row">
+			<div class="col-sm-1">Test Name</div>
+			<div class="col-sm-11 text-primary">@Model.Test.Name</div>
 		</div>
-	}
-</div>
+		<div class="row">
+			<h5 class="col-sm-1">Pipeline:</h5>
+			<h5 class="col-sm-3"><strong>@Model.Test.PipelineName</strong></h5>
+			<h5 class="col-sm-1">Stage:</h5>
+			<h5 class="col-sm-3"><strong>@Model.Test.StageName</strong></h5>
+			<h5 class="col-sm-1">Job:</h5>
+			<h5 class="col-sm-3"><strong>@Model.Test.JobName</strong></h5>
+		</div>
+	</div>
+	<div class="panel-group">
+		@foreach (var r in Model.TestRuns)
+		{
+			<div class="panel panel-danger">
+				<div class="panel-heading text-capitalize">@r.Error <span class="badge"><strong>@r.Count</strong></span></div>
+				<div class="panel-body">
+					<div class="row">
+						<div class="col-sm-1"><strong>Agent</strong></div>
+						<div class="col-sm-3 text-uppercase">@r.Agent</div>
+						<div class="col-sm-1"><strong>Start Time</strong></div>
+						<div class="col-sm-3">@r.StartTime.ToString("dd/MMM/yyyy HH:mm")</div>
+						<div class="col-sm-1"><strong>Duration (S)</strong></div>
+						<div class="col-sm-3">@Math.Round(r.Duration.TotalSeconds, 1)</div>
+					</div>
+					<div class="row">
+						<div class="col-sm-1"><strong>Call stack</strong></div>
+						<span class="col-sm-11"><code>@r.CallStack</code></span>
+					</div>
+					<div class="row">
+						<div class="col-sm-2"><strong>Change lists</strong></div>
+
+						<table class="table-condensed table-striped col-sm-11 col-sm-offset-1">
+							<thead>
+							<tr>
+								<th>Id</th>
+								<th>User Name</th>
+								<th>Comment</th>
+								<th class="visible-lg">Date</th>
+							</tr>
+							</thead>
+							<tbody>
+							@foreach (var c in r.ChangeLists)
+							{
+								<tr>
+									<td class="col-md-1">@c.Id</td>
+									<td class="col-md-2">@c.UserName</td>
+									<td class="col-md-8 col-lg-6">@c.Comment</td>
+									<td class="visible-lg col-lg-2">@c.ModifiedDate.ToString("dd/MMM/yyyy HH:mm")</td>
+								</tr>
+							}
+							</tbody>
+						</table>
+					</div>
+				</div>
+
+				@*<div class="row">
+					<div class="col-sm-2">Error</div>
+					<div class="col-sm-10 text-danger"></div>
+				</div>*@
+
+
+			</div>
+		}
+	</div>
+}
+

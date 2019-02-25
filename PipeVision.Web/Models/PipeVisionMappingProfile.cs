@@ -18,13 +18,19 @@ namespace PipeVision.Web.Models
 
             CreateMap<ChangeList, ChangeListViewModel>();
 
-            CreateMap<Test, TestRunViewModel>()
-                .ForMember(dest => dest.ChangeLists, src => src.MapFrom(j => j.PipelineJob.Pipeline.PipelineChangeLists.Select(cl=>cl.ChangeList)))
-                .ForMember(dest => dest.Agent, src => src.MapFrom(j => j.PipelineJob.Agent))
-                .ForMember(dest => dest.StartTime, src => src.MapFrom(j => j.PipelineJob.StartDate));
-            ;
-            CreateMap<IEnumerable<Test>,TestDetailedViewModel>()
-                .ForMember(dest => dest.Test, src => src.MapFrom(t => t.FirstOrDefault()))
+            CreateMap<(Test test, int count), TestRunViewModel>()
+                .ForMember(dest => dest.Error, src => src.MapFrom(j => j.test.Error))
+                .ForMember(dest => dest.CallStack, src => src.MapFrom(j => j.test.CallStack))
+                .ForMember(dest => dest.Duration, src => src.MapFrom(j => j.test.Duration))
+                .ForMember(dest => dest.Agent, src => src.MapFrom(j => j.test.PipelineJob.Agent))
+                .ForMember(dest => dest.StartTime, src => src.MapFrom(j => j.test.PipelineJob.StartDate))
+                .ForMember(dest => dest.Count, src => src.MapFrom(c => c.count))
+                .ForMember(dest => dest.ChangeLists,
+                    src => src.MapFrom(j =>
+                        j.test.PipelineJob.Pipeline.PipelineChangeLists.Select(cl => cl.ChangeList)));
+
+            CreateMap<IEnumerable<(Test test, int count)>,TestDetailedViewModel>()
+                .ForMember(dest => dest.Test, src => src.MapFrom(t => t.FirstOrDefault().test))
                 .ForMember(dest => dest.TestRuns, src => src.MapFrom(t=>t));
 
         }

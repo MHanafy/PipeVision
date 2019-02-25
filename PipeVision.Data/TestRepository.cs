@@ -43,26 +43,31 @@ namespace PipeVision.Data
                 .AsNoTracking()
                 .ToListAsync();
         }
-        public async Task<IEnumerable<Test>> GetTestRunsSinceLastSuccess(string testName)
+        public async Task<IEnumerable<Test>> GetTestRunsSinceLastSuccess(string testName, int maxRecords = 100)
         {
             var lastSuccessJobId = await _context.Tests
                 .Where(x => x.Name == testName && x.Error == null)
-                .Select(x=>x.PipelineJobId)
-                .DefaultIfEmpty()
+                .Select(x=> (int?) x.PipelineJobId)
                 .MaxAsync(x=>x);
 
-            IQueryable<Test> query = lastSuccessJobId == 0
-                ? _context.Tests.Where(x => x.Name == testName)
-                : _context.Tests.Where(x => x.Name == testName && x.PipelineJobId > lastSuccessJobId);
+            IQueryable<Test> query = lastSuccessJobId.HasValue
+                ? _context.Tests.Where(x => x.Name == testName && x.PipelineJobId > lastSuccessJobId)
+                : _context.Tests.Where(x => x.Name == testName);
 
             return await query
                 .OrderByDescending(x => x.PipelineJobId)
-                .Take(100)
+                .Take(maxRecords)
                 .Include(x => x.PipelineJob)
                 .ThenInclude(x => x.Pipeline)
                 .ThenInclude(x => x.PipelineChangeLists)
                 .ThenInclude(x => x.ChangeList)
                 .ToListAsync();
+        }
+
+        public Task<DateTime?> GetLastSuccessDate(string testName)
+        {
+            return _context.Tests.Where(x => x.Name == testName && x.Error == null)
+                .MaxAsync(x => (DateTime?) x.PipelineJob.StartDate);
         }
     }
 }

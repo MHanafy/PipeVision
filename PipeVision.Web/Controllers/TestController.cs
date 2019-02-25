@@ -37,7 +37,15 @@ namespace PipeVision.Web.Controllers
 
         public async Task<IActionResult> FailedRuns(string testName)
         {
-            var testRuns = await _pipelineService.GetTestFailures(HttpUtility.UrlDecode(testName));
+            var testRuns = await _pipelineService.GetUniqueTestFailures(HttpUtility.UrlDecode(testName));
+            if (testRuns.Any()) return View(_mapper.Map<TestDetailedViewModel>(testRuns));
+
+            var lastSuccessDate = await _pipelineService.GetLastSuccessDate(testName);
+            //If neither failures not successes were found, then a non existent test name was provided.
+            if (lastSuccessDate == null) return NotFound();
+
+            ViewBag.LastSuccessDate = lastSuccessDate;
+            ViewBag.TestName = testName;
             return View(_mapper.Map<TestDetailedViewModel>(testRuns));
         }
     }

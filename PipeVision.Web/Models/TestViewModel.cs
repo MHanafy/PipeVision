@@ -40,6 +40,7 @@ namespace PipeVision.Web.Models
         public string Error { get; set; }
         public string CallStack { get; set; }
         public string Agent { get; set; }
+        public int Count { get; set; }
         public List<ChangeListViewModel> ChangeLists { get; set; }
     }
 

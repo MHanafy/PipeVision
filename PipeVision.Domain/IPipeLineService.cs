@@ -17,6 +17,8 @@ namespace PipeVision.Domain
     public interface IPipelineService
     {
         Task<IEnumerable<Test>> GetFailingTests(DateTime? date = null);
-        Task<IEnumerable<Test>> GetTestFailures(string testName, bool keepRedundant = false);
+        Task<IEnumerable<Test>> GetTestFailures(string testName);
+        Task<List<(Test test, int Count)>> GetUniqueTestFailures(string testName);
+        Task<DateTime?> GetLastSuccessDate(string testName);
     }
 }

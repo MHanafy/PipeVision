@@ -35,3 +35,7 @@ body {
         display: none;
     }
 }
+
+.badge {
+	border-radius: 5px;
+}

@@ -41,11 +41,16 @@ namespace PipeVision.Application
                         var result = await _pipelineProvider.GetJobResult(pipelineName, pipeline.Counter, job.StageName,
                             job.StageCounter,
                             job.Name);
-                        if (result == null) continue;
+                        if (result == null)
+                        {
+                            job.LogStatus = LogStatus.NotFound;
+                            continue;
+                        }
                         if (result.StartTime.HasValue) job.StartDate = result.StartTime.Value;
                         if (result.EndTime.HasValue) job.EndDate = result.EndTime.Value;
                         job.Result = result.Status;
                         job.Agent = result.Agent;
+                        job.LogStatus = LogStatus.NoParserFound;
                         foreach (var task in result.Tasks)
                         {
                             if (task.Log == null) continue;
@@ -58,9 +63,11 @@ namespace PipeVision.Application
                                     if (!tests.Any())
                                         _logger.LogWarning(
                                             $"Job log doesn't have any test results! Job: {job.Name}");
+                                    job.LogStatus = LogStatus.Parsed;
                                     foreach (var test in tests)
                                     {
                                         //Avoid test result duplication
+                                        test.PipelineJobId = job.Id;
                                         if (testLookup.ContainsKey(test.Name))
                                         {
                                             testLookup[test.Name] = test;
@@ -68,10 +75,8 @@ namespace PipeVision.Application
                                                 $"Duplicate test detected in the same run Test: '{test.Name}'");
                                             continue;
                                         }
-                                        test.PipelineJobId = job.Id;
                                         testLookup.Add(test.Name, test);
                                     }
-
                                     job.TestType = parser.TestType;
                                     break;
                                 }
@@ -83,6 +88,8 @@ namespace PipeVision.Application
                         }
 
                         job.Tests = testLookup.Values.ToList();
+                        if (job.LogStatus == LogStatus.Parsed && job.Tests.Count == 0)
+                            job.LogStatus = LogStatus.NotTestsFound;
 
                     }
                 }

@@ -12,6 +12,7 @@ namespace PipeVision.Domain
         /// <param name="date"></param>
         /// <returns></returns>
         Task<IEnumerable<Test>> GetFailingTests(DateTime? date = null);
-        Task<IEnumerable<Test>> GetTestRunsSinceLastSuccess(string testName);
+        Task<IEnumerable<Test>> GetTestRunsSinceLastSuccess(string testName, int maxRecords = 100);
+        Task<DateTime?> GetLastSuccessDate(string testName);
     }
 }
