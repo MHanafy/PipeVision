@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "PipeVisionConsole": {
+      "commandName": "Project",
+      "commandLineArgs": "-a"
+    }
+  }
+}

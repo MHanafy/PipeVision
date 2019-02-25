@@ -1,0 +1,25 @@
+﻿{
+	"groups": [
+		{
+			"name": "UI",
+			"pipelines": [
+				"UI_Tests_01",
+				"UI_Tests_02"
+			]
+		},
+		{
+			"name": "UI-Pending",
+			"pipelines": [
+				"Other_UI_Pipeline",
+				"Disabled_UI_Pipeline"
+			] 
+		},
+		{
+			"name": "Integration",
+			"pipelines": [
+				"Integration_Tests_01",
+				"Integration_Tests_02"
+			]
+		}
+	]
+}

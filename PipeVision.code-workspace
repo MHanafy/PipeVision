@@ -1,0 +1,14 @@
+{
+	"folders": [
+		{
+			"path": "PipeVision.Data"
+		},
+		{
+			"path": "PipeVision.Web"
+		},
+		{
+			"path": "PipeVision.Console"
+		}
+	],
+	"settings": {}
+}

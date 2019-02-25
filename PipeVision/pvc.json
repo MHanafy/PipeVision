@@ -1,0 +1,7 @@
+﻿{
+	"DbConnection": "Server=(localdb)\\mssqllocaldb;Database=PipeVisionTest;Trusted_Connection=True;MultipleActiveResultSets=true",
+	"GoServerBaseAddress": "http://GoServerName/go/",
+	"GoServerUser": "GoServerUser",
+	"GoServerPass": "GoServerPass",
+	"DbCommandTimeout" :  180 
+}
