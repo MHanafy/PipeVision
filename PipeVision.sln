@@ -13,7 +13,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PipeVision.Application", "P
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PipeVision.Data.Tests", "PipeVision.Data.Tests\PipeVision.Data.Tests.csproj", "{D0A64B26-03A3-4DEC-9977-2FA2D6FA8946}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GoPipeline", "GoPipeline\GoPipeline.csproj", "{B686C7E4-1610-481A-BB3F-62C4E199CD74}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PipeVision.GoPipeline", "GoPipeline\PipeVision.GoPipeline.csproj", "{B686C7E4-1610-481A-BB3F-62C4E199CD74}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GoPipeline.Tests", "GoPipeline.Tests\GoPipeline.Tests.csproj", "{D2AF1037-6C85-4491-966F-6DC811E9FC87}"
 EndProject

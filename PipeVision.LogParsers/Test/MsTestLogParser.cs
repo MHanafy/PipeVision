@@ -19,8 +19,8 @@ namespace PipeVision.LogParsers.Test
 
         private static readonly string PTestName = $@"{PLineLookBehind}{PLinePrefix}{PTimeGroup} (?'status'Passed|Failed) *(?'name'[^\n]*){PLineSuffix}";
         private static readonly string PError = $@"{PLinePrefix}{PTime} Error Message[^\n]*{PLineSuffix}(?'error'.*?)";
-        private static readonly string PStack = $@"{PLinePrefix}{PTime} Stack Trace[^\n]*{PLineSuffix}(?'stack'.*?){PLineSuffix}{PTime} {PLineSuffix}";
-        private static readonly string PTest = $@"{PTestName}(?>{PError}{PStack})?";
+        private static readonly string PStack = $@"{PLinePrefix}{PTime} Stack Trace[^\n]*{PLineSuffix}(?'stack'.*?){PLineSuffix}{PLinePrefix}{PTime} {PLineSuffix}";
+        private static readonly string PTest = $@"(?s){PTestName}(?>{PError}{PStack})?";
 
         private const string RgxLinePrefix = @"(?m)^(?>.{3})?(?'time'\d{2}:\d{2}:\d{2}\.\d{3})\s";
         private const string RgxHeader =  @"Microsoft \(R\) Test Execution Command Line Tool";

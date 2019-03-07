@@ -1,10 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Data.SqlClient;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using GoPipeline;
+using AutoMapper;
 using McMaster.Extensions.CommandLineUtils;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
@@ -14,6 +15,7 @@ using NLog.Extensions.Logging;
 using PipeVision.Application;
 using PipeVision.Data;
 using PipeVision.Domain;
+using PipeVision.GoPipeline;
 using PipeVision.LogParsers.Test;
 using PipeVisionConsole.Config;
 
@@ -28,13 +30,25 @@ namespace PipeVisionConsole
 
         public static async Task<int> Main(string[] args)
         {
-            if (args.Length == 0)
-            {
-                Console.WriteLine("use -? to list available options");
-                return 0;
-            }
-           return await CommandLineApplication.ExecuteAsync<Program>(args);
-        } 
+            if (args.Length != 0) return await CommandLineApplication.ExecuteAsync<Program>(args);
+            Console.WriteLine("use -? to list available options");
+            return 0;
+        }
+
+        private const string OperationUpdate = "update";
+        private const string OperationArchive = "archive";
+
+        [Option(CommandOptionType.SingleValue, Description = "Can be either update or archive, defaults to update", ShortName = "o")]
+        [AllowedValues(OperationUpdate, OperationArchive, IgnoreCase = true)]
+        public string Operation { get; } = OperationUpdate;
+
+        [Option(CommandOptionType.SingleValue, Description = "Number of days to retain (not archived)", ShortName = "d")]
+        [Range(30,365)]
+        public int Days { get; } = 90;
+
+        [Option(CommandOptionType.SingleValue, Description = "Maximum number of pipelines to archive", ShortName = "l")]
+        [Range(1,500)]
+        public int Limit { get; } = 100;
 
         [Option(CommandOptionType.MultipleValue,
             Description = "Pipeline name, supports multiple values by including the option multiple times",
@@ -54,8 +68,7 @@ namespace PipeVisionConsole
         [Option(CommandOptionType.NoValue, Description = "Refreshes all pipelines in Pipelines.json")]
         public bool All { get; }
 
-        // ReSharper disable once UnusedMember.Local
-        private async Task OnExecute()
+        public List<string> GetPipelineNames()
         {
             List<string> pipelineNames = null;
             if (All)
@@ -63,7 +76,7 @@ namespace PipeVisionConsole
                 if (Group != null || Pipeline != null)
                 {
                     _logger.LogWarning(" option -a can't be used in combination with -g or -p");
-                    return;
+                    return null;
                 }
 
                 pipelineNames = GetGroupPipelines();
@@ -74,7 +87,7 @@ namespace PipeVisionConsole
                 {
                     {
                         _logger.LogWarning(" option -g can't be used in combination with -p");
-                        return;
+                        return null;
                     }
                 }
 
@@ -86,25 +99,44 @@ namespace PipeVisionConsole
                 _logger.LogWarning("Please use one of the options -a, -g, or -p. use -? for all available options");
             }
 
-            if (pipelineNames == null || pipelineNames.Count == 0)
-            {
-                _logger.LogWarning("No pipelines found, aborting.");
-                return;
-            }
+            if (pipelineNames != null && pipelineNames.Count != 0) return pipelineNames;
 
+            _logger.LogWarning("No pipelines found, aborting.");
+            return null;
+
+        }
+
+        // ReSharper disable once UnusedMember.Local
+        private async Task OnExecuteAsync()
+        {
             if (!ReadConfig()) return;
             var serviceProvider = BuildDi();
+
             _logger = serviceProvider.GetRequiredService<ILogger<Program>>();
             var service = serviceProvider.GetRequiredService<IPipelineUpdateService>();
             AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
 
-            var count = Count == 0 ? 10 : Count;
-            foreach (var pipelineName in pipelineNames)
+            switch (Operation)
             {
-                await service.UpdatePipelines(pipelineName, count);
-            }
+                case OperationArchive:
+                    await service.ArchivePipeLines(Days, Limit);
+                    _logger.LogInformation("Pipeline archive completed.");
+                    break;
+                case OperationUpdate:
+                    var pipelineNames = GetPipelineNames();
+                    if (pipelineNames == null) return;
+                    var count = Count == 0 ? 10 : Count;
+                    foreach (var pipelineName in pipelineNames)
+                    {
+                        await service.UpdatePipelines(pipelineName, count);
+                    }
 
-            _logger.LogInformation("Pipeline refresh completed.");
+                    _logger.LogInformation("Pipeline update completed.");
+                    break;
+                default:
+                    _logger.LogError("Unsupported operation: " + Operation);
+                    break;
+            }
         }
 
         private List<string> GetGroupPipelines(List<string> groupNames = null)
@@ -184,12 +216,22 @@ namespace PipeVisionConsole
                         CaptureMessageProperties = true
                     });
                 })
-                .AddDbContext<PipelineContext>(options =>
+
+                //Sharing DbContextOptions, to have one scoped connection across contexts
+                .AddScoped(svcProvider =>
                 {
-                    options.UseSqlServer(_config.DbConnection, cfg=>cfg.CommandTimeout(_config.DbCommandTimeout));
-                    options.EnableSensitiveDataLogging();
+                    var optionsBuilder = new DbContextOptionsBuilder();
+                    optionsBuilder.UseSqlServer(new SqlConnection(_config.DbConnection), cfg => cfg.CommandTimeout(_config.DbCommandTimeout));
+                    optionsBuilder.EnableSensitiveDataLogging();
+                    return optionsBuilder.Options;
                 })
+                .AddTransient<PipelineContext>()
+                .AddTransient<PipelineArchiveContext>()
+
+                .AddAutoMapper()
+                .AddScoped<ITestRepository, TestRepository>()
                 .AddScoped<IPipelineRepository, PipelineRepository>()
+                .AddScoped<IPipelineArchiveRepository, PipelineArchiveRepository>()
                 .AddScoped<IPipelineUpdateService, PipelineUpdateService>()
                 .AddTransient<IWhiteStackLogParser, WhiteStackLogParser>()
                 .AddTransient<IMsTestLogParser, MsTestLogParser>();

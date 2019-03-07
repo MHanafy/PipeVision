@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using GoPipeline.JsonResults;
 using PipeVision.Domain;
+using PipeVision.GoPipeline.JsonResults;
 using Pipeline = PipeVision.Domain.Pipeline;
 
-namespace GoPipeline
+namespace PipeVision.GoPipeline
 {
     internal class ChangelistIdComparer : IEqualityComparer<ChangeList>
     {
@@ -43,15 +43,15 @@ namespace GoPipeline
                 });
         }
 
-        public static Pipeline ToPipeline(this JsonResults.Pipeline source)
+        public static Pipeline ToPipeline(this global::PipeVision.GoPipeline.JsonResults.Pipeline source, int latestRun)
         {
             return new Pipeline
             {
                 Id = source.id,
                 Counter = source.counter,
                 Name = source.name,
-                InProgress = source.stages.Any(x =>
-                    x.result != "Passed" && x.result != "Failed" && x.result != "Cancelled"),
+                //Only the latest run is considered in progress
+                InProgress = source.counter == latestRun,
                 PipelineJobs = source.stages.SelectMany(s => s.jobs.Select(j =>
                     new PipelineJob
                     {
@@ -66,6 +66,11 @@ namespace GoPipeline
                 )).ToList()
             };
 
+        }
+
+        private static bool IsInProgress(string result)
+        {
+            return result != "passed" && result != "failed" && result != "cancelled";
         }
 
         public static List<Pipeline> ToPipelineList(this PipelinePagedHistory pagedHistory)

@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using PipeVision.Data;
 
-namespace PipeVision.Data.Migrations
+namespace PipeVision.Data.Migrations.PipelineArchive
 {
-    [DbContext(typeof(PipelineContext))]
-    partial class PipelineContextModelSnapshot : ModelSnapshot
+    [DbContext(typeof(PipelineArchiveContext))]
+    [Migration("20190305210644_Archive")]
+    partial class Archive
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -21,9 +23,7 @@ namespace PipeVision.Data.Migrations
 
             modelBuilder.Entity("PipeVision.Data.Test", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                    b.Property<int>("Id");
 
                     b.Property<string>("Name");
 
@@ -33,12 +33,12 @@ namespace PipeVision.Data.Migrations
                         .IsUnique()
                         .HasFilter("[Name] IS NOT NULL");
 
-                    b.ToTable("Tests");
+                    b.ToTable("Arc_Tests");
                 });
 
             modelBuilder.Entity("PipeVision.Data.TestRun", b =>
                 {
-                    b.Property<int>("Test1Id");
+                    b.Property<int>("TestId");
 
                     b.Property<int>("PipelineJobId");
 
@@ -48,15 +48,11 @@ namespace PipeVision.Data.Migrations
 
                     b.Property<string>("Error");
 
-                    b.Property<int?>("TestId");
-
-                    b.HasKey("Test1Id", "PipelineJobId");
+                    b.HasKey("TestId", "PipelineJobId");
 
                     b.HasIndex("PipelineJobId");
 
-                    b.HasIndex("TestId");
-
-                    b.ToTable("TestRuns");
+                    b.ToTable("Arc_TestRuns");
                 });
 
             modelBuilder.Entity("PipeVision.Domain.ChangeList", b =>
@@ -71,7 +67,7 @@ namespace PipeVision.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("ChangeLists");
+                    b.ToTable("Arc_ChangeLists");
                 });
 
             modelBuilder.Entity("PipeVision.Domain.Pipeline", b =>
@@ -86,7 +82,7 @@ namespace PipeVision.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Pipelines");
+                    b.ToTable("Arc_Pipelines");
                 });
 
             modelBuilder.Entity("PipeVision.Domain.PipelineChangelist", b =>
@@ -99,7 +95,7 @@ namespace PipeVision.Data.Migrations
 
                     b.HasIndex("ChangelistId");
 
-                    b.ToTable("PipelineChangeLists");
+                    b.ToTable("Arc_PipelineChangeLists");
                 });
 
             modelBuilder.Entity("PipeVision.Domain.PipelineJob", b =>
@@ -130,7 +126,7 @@ namespace PipeVision.Data.Migrations
 
                     b.HasIndex("PipelineId");
 
-                    b.ToTable("PipelineJobs");
+                    b.ToTable("Arc_PipelineJobs");
                 });
 
             modelBuilder.Entity("PipeVision.Data.TestRun", b =>
@@ -142,7 +138,8 @@ namespace PipeVision.Data.Migrations
 
                     b.HasOne("PipeVision.Data.Test", "Test")
                         .WithMany("TestRuns")
-                        .HasForeignKey("TestId");
+                        .HasForeignKey("TestId")
+                        .OnDelete(DeleteBehavior.Cascade);
                 });
 
             modelBuilder.Entity("PipeVision.Domain.PipelineChangelist", b =>

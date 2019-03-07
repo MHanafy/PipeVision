@@ -5,7 +5,20 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="McMaster.Extensions.CommandLineUtils" Version="2.3.1" />
+    <Compile Remove="Migrations\20190226114518_AddTestRun.cs" />
+    <Compile Remove="Migrations\20190226114747_AddTestRun.cs" />
+    <Compile Remove="Migrations\20190226115743_AddTestRun.cs" />
+    <Compile Remove="Migrations\20190226120452_AddTestRun.cs" />
+    <Compile Remove="Migrations\20190226120608_AddTestRun.cs" />
+    <Compile Remove="Migrations\20190226120859_AddTestRun2.cs" />
+    <Compile Remove="Migrations\20190226121441_AddTestRun3.cs" />
+    <Compile Remove="Migrations\PipelineArchive\20190304205931_Archive.cs" />
+    <Compile Remove="Migrations\PipelineArchive\20190304210153_Archive.cs" />
+    <Compile Remove="Migrations\PipelineArchive\20190305122537_Archive.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="automapper" Version="8.0.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="2.2.1" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="2.2.1" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="2.2.1">
@@ -18,6 +31,12 @@
 
   <ItemGroup>
     <ProjectReference Include="..\PipeVision.Domain\PipeVision.Domain.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="AutoMapper">
+      <HintPath>..\..\..\..\.nuget\packages\automapper\8.0.0\lib\netstandard2.0\AutoMapper.dll</HintPath>
+    </Reference>
   </ItemGroup>
 
 </Project>

@@ -12,6 +12,14 @@ namespace PipeVision.Domain
         /// <param name="pipelineName"></param>
         /// <param name="count"></param>
         Task UpdatePipelines(string pipelineName, int count = 10);
+
+        /// <summary>
+        /// Archives pipeline data leaving up provided number of days
+        /// </summary>
+        /// <param name="days"></param>
+        /// <param name="limit"></param>
+        /// <returns></returns>
+        Task ArchivePipeLines(int days, int limit = 100);
     }
 
     public interface IPipelineService

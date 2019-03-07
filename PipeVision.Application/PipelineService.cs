@@ -10,14 +10,11 @@ namespace PipeVision.Application
 {
     public class PipelineService : IPipelineService
     {
-
-        private readonly IPipelineRepository _pipelineRepository;
         private readonly ITestRepository _testRepository;
         private readonly ILogger<PipelineService> _logger;
 
         public PipelineService(IPipelineRepository pipelineRepository, ITestRepository testRepository, ILogger<PipelineService> logger)
         {
-            _pipelineRepository = pipelineRepository;
             _testRepository = testRepository;
             _logger = logger;
         }

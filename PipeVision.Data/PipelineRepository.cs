@@ -24,7 +24,7 @@ namespace PipeVision.Data
 
         public async Task AddPipeline(Pipeline pipeline)
         {
-            _context.Pipelines.Add(pipeline);
+            await _context.Pipelines.AddAsync(pipeline);
             await _context.SaveChangesAsync();
         }
 
@@ -32,8 +32,8 @@ namespace PipeVision.Data
         {
             foreach (var pipelineChange in pipeline.PipelineChangeLists)
             {
-                var exChangelist = _context.ChangeLists.Find(pipelineChange.ChangeList.Id);
-                //this assumes that changelists are never changed
+                var exChangelist = await _context.ChangeLists.FindAsync(pipelineChange.ChangeList.Id);
+                //this assumes that ChangeLists are never changed
                 if (exChangelist != null) pipelineChange.ChangeList = exChangelist;
                 pipelineChange.PipelineId = pipelineChange.Pipeline.Id;
                 pipelineChange.ChangelistId = pipelineChange.ChangeList.Id;
@@ -41,7 +41,7 @@ namespace PipeVision.Data
             var existing = await GetPipeline(pipeline.Id);
             if (existing == null)
             {
-                _context.Pipelines.Add(pipeline);
+                await _context.Pipelines.AddAsync(pipeline);
             }
             else
             {
@@ -65,7 +65,6 @@ namespace PipeVision.Data
         {
             return _context.Pipelines.Where(x => x.Id == id)
                 .Include(x => x.PipelineJobs)
-                .ThenInclude(x => x.Tests)
                 .Include(x => x.PipelineChangeLists)
                 .FirstOrDefaultAsync();
         }

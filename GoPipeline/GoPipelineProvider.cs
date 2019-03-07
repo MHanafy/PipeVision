@@ -6,13 +6,13 @@ using System.Net.Http.Headers;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-using GoPipeline.JsonResults;
+using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using PipeVision.Domain;
+using PipeVision.GoPipeline.JsonResults;
 using Pipeline = PipeVision.Domain.Pipeline;
-using Microsoft.Extensions.Logging;
 
-namespace GoPipeline
+namespace PipeVision.GoPipeline
 {
     public class GoPipelineProvider : IPipelineProvider
     {
@@ -48,7 +48,6 @@ namespace GoPipeline
                 var url = PipelineHistoryUrl.Replace("{pipelineName}", pipelineName)
                     .Replace("{offset}", offset.ToString());
 
-                //var jsonResult = _client.GetAsync(url).Result;
                 var jsonResult = await _client.GetAsync(url);
 
                 var pagedHistory =
@@ -64,7 +63,7 @@ namespace GoPipeline
                 for (var i = currentTo; i >= currentFrom; i--)
                 {
                     var index = pagedHistory.pagination.total - pagedHistory.pagination.offset - i;
-                    var pipeline = pagedHistory.pipelines[index].ToPipeline();
+                    var pipeline = pagedHistory.pipelines[index].ToPipeline(pagedHistory.pagination.total);
                     pipeline.PipelineChangeLists = (await GetChangeLists(pagedHistory.pipelines[index].build_cause))
                         .Distinct(new ChangelistIdComparer())
                         .Select(x => new PipelineChangelist {Pipeline = pipeline, ChangeList = x, }).ToList();
@@ -93,7 +92,7 @@ namespace GoPipeline
                     .Replace("{id}", pipeInfo.Groups["id"].Value);
 
                 var jsonResult = _client.GetAsync(url).Result;
-                var buildCause = JsonConvert.DeserializeObject<JsonResults.Pipeline>(
+                var buildCause = JsonConvert.DeserializeObject<global::PipeVision.GoPipeline.JsonResults.Pipeline>(
                     await jsonResult.Content.ReadAsStringAsync()).build_cause;
                 result.AddRange(await GetChangeLists(buildCause));
             }

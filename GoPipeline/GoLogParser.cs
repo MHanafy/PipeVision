@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
-using PipeVision.Domain;
 using Microsoft.Extensions.Logging;
+using PipeVision.Domain;
 
 // ReSharper disable StringLiteralTypo
 
-namespace GoPipeline
+namespace PipeVision.GoPipeline
 {
 
     public class JobResult : IJobResult

@@ -2,7 +2,7 @@
 
 // ReSharper disable InconsistentNaming
 
-namespace GoPipeline.JsonResults
+namespace PipeVision.GoPipeline.JsonResults
 {
     public class Pagination
     {

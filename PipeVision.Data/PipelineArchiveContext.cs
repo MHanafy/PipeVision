@@ -1,22 +1,26 @@
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using PipeVision.Domain;
 
 namespace PipeVision.Data
 {
-    public class PipelineContext : DbContext
+
+    public class PipelineArchiveContext : DbContext
     {
-        public PipelineContext(DbContextOptions options) : base(options)
+        public PipelineArchiveContext(DbContextOptions options) : base(options)
         {
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+
             modelBuilder.Entity<Test>()
                 .HasIndex(x => x.Name).IsUnique();
 
+            
             modelBuilder.Entity<TestRun>()
-                .HasKey(x => new {x.TestId, x.PipelineJobId});
+                .HasKey(x => new { x.TestId, x.PipelineJobId });
+
 
             modelBuilder.Entity<TestRun>()
                 .Property(x => x.Duration)
@@ -26,7 +30,7 @@ namespace PipeVision.Data
                 .Ignore(x => x.Tests);
 
             modelBuilder.Entity<PipelineChangelist>()
-                .HasKey(x => new {x.PipelineId, x.ChangelistId});
+                .HasKey(x => new { x.PipelineId, x.ChangelistId });
 
             modelBuilder.Entity<PipelineChangelist>()
                 .HasOne(x => x.Pipeline)
@@ -38,6 +42,14 @@ namespace PipeVision.Data
                 .WithMany(x => x.PipelineChangeLists)
                 .HasForeignKey(x => x.ChangelistId);
 
+            modelBuilder.Entity<Test>()
+                .Property(x => x.Id)
+                .ValueGeneratedNever();
+
+            foreach (var entityType in modelBuilder.Model.GetEntityTypes())
+            {
+                entityType.Relational().TableName = "Arc_" + entityType.Relational().TableName;
+            }
         }
 
         public DbSet<ChangeList> ChangeLists { get; set; }
@@ -46,8 +58,6 @@ namespace PipeVision.Data
         public DbSet<Test> Tests { get; set; }
         public DbSet<TestRun> TestRuns { get; set; }
         public DbSet<PipelineChangelist> PipelineChangeLists { get; set; }
+
     }
-
-
 }
- 

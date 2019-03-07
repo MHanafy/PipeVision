@@ -25,7 +25,5 @@ namespace PipeVision.Domain
         List<Test> Tests { get; set; }
         TestType TestType { get; set; }
         LogStatus LogStatus { get; set; }
-
-        PipelineJob Clone();
     }
 }

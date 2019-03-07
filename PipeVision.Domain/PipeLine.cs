@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
 
 namespace PipeVision.Domain
 {
@@ -24,13 +23,6 @@ namespace PipeVision.Domain
             PipelineJobs.Apply<PipelineJob, int>(updated.PipelineJobs);
             PipelineChangeLists.Apply<PipelineChangelist, Tuple<int, int>>(updated.PipelineChangeLists);
         }
-
-        public Pipeline Clone()
-        {
-            var result = (Pipeline) MemberwiseClone();
-            result.PipelineJobs = PipelineJobs.Select(x => x.Clone()).ToList();
-            return result;
-        }
     }
 
     public enum TestType{
@@ -50,7 +42,6 @@ namespace PipeVision.Domain
             StageCounter = updated.StageCounter;
             Agent = updated.Agent;
             LogStatus = updated.LogStatus;
-            Tests.Apply<Test, Tuple<int, string>>(updated.Tests);
         }
 
        [DatabaseGenerated(DatabaseGeneratedOption.None)]
@@ -67,17 +58,5 @@ namespace PipeVision.Domain
         public int PipelineId{get;set;}
         public virtual Pipeline Pipeline{get;set;}
         public virtual List<Test> Tests{get;set;}
-
-        /// <summary>
-        /// Deeply clones all child entities, sets parent entities to null
-        /// </summary>
-        public PipelineJob Clone()
-        {
-            var result = (PipelineJob) MemberwiseClone();
-            result.Pipeline = null;
-            result.Tests = Tests.Select(x => x.Clone()).ToList();
-            return result;
-        }
-
     }
     }

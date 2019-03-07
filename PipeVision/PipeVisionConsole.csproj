@@ -1,14 +1,16 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <TargetFramework>netcoreapp2.1</TargetFramework>
-	<RuntimeIdentifiers>win-x64</RuntimeIdentifiers>
+    <TargetFramework>netcoreapp2.2</TargetFramework>
+    <RuntimeIdentifiers>win-x64</RuntimeIdentifiers>
     <AssemblyName>pvc</AssemblyName>
     <RootNamespace>PipeVisionConsole</RootNamespace>
     <LangVersion>7.1</LangVersion>
     <ApplicationIcon />
     <StartupObject />
+    <Product>Pipe Vision</Product>
+    <Description>Pipe Vision Console</Description>
   </PropertyGroup>
 
   <ItemGroup>
@@ -22,7 +24,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="McMaster.Extensions.CommandLineUtils" Version="2.3.1" />
+    <PackageReference Include="automapper" Version="8.0.0" />
+    <PackageReference Include="automapper.extensions.microsoft.dependencyinjection" Version="6.0.0" />
+    <PackageReference Include="mcmaster.Extensions.CommandLineUtils" Version="2.3.2" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="2.2.1" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="2.2.1">
       <PrivateAssets>all</PrivateAssets>
@@ -35,7 +39,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\GoPipeline\GoPipeline.csproj" />
+    <ProjectReference Include="..\GoPipeline\PipeVision.GoPipeline.csproj" />
     <ProjectReference Include="..\PipeVision.Application\PipeVision.Application.csproj" />
     <ProjectReference Include="..\PipeVision.Data\PipeVision.Data.csproj" />
     <ProjectReference Include="..\PipeVision.Domain\PipeVision.Domain.csproj" />
