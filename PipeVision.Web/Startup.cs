@@ -44,6 +44,8 @@ namespace PipeVision.Web
             services.AddScoped<IPipelineRepository, PipelineRepository>();
             services.AddScoped<ITestRepository, TestRepository>();
             services.AddScoped<IPipelineService, PipelineService>();
+
+            services.AddSingleton<ITimerService, TimerService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

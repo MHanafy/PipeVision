@@ -1,8 +1,10 @@
 ﻿using System;
 using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using NLog.Web;
+using PipeVision.Application;
 
 namespace PipeVision.Web
 {
@@ -15,7 +17,9 @@ namespace PipeVision.Web
             try
             {
                 logger.Debug("init main");
-                CreateWebHostBuilder(args).Build().Run();
+                var host = CreateWebHostBuilder(args).Build();
+                CacheHelper.Configure(host.Services.GetService<ITimerService>());
+                host.Run();
             }
             catch (Exception ex)
             {

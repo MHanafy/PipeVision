@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Web;
@@ -23,15 +22,10 @@ namespace PipeVision.Web.Controllers
             _mapper = mapper;
             _cache = cache;
         }
-        public async Task<IActionResult> Index()
+        public IActionResult Index()
         {
-            var cacheKey = $"{nameof(TestController)}.{nameof(Index)}";
-            if (!_cache.TryGetValue(cacheKey, out IEnumerable<Test> failingTests))
-            {
-                failingTests = await _pipelineService.GetFailingTests(DateTime.Today.AddDays(-30));
-                _cache.Set(cacheKey, failingTests, TimeSpan.FromMinutes(5));
-            }
-             
+            //Failing tests are populated by the CacheHelper
+            var failingTests = _cache.Get(CacheHelper.FailingTestsKey) ?? new List<Test>();
             return View(_mapper.Map<IEnumerable<TestViewModel>>(failingTests).OrderByDescending(x=>x.StartTime));
         }
 
