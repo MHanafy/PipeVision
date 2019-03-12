@@ -27,7 +27,7 @@ namespace PipeVision.Data
                 var testNames = await GetTestIds(tests.Select(x => x.Name).Distinct().ToList(), true);
                 foreach (var test in tests)
                 {
-                     var testId = testNames[test.Name];
+                     var testId = testNames[test.Name.ToLowerInvariant()];
                     if (ignoreExisting && await _context.TestRuns.FindAsync(testId, test.PipelineJobId) != null) continue;
                     var testRun = _mapper.Map<TestRun>(test);
                     testRun.TestId = testId;
@@ -41,17 +41,17 @@ namespace PipeVision.Data
 
         private async Task<Dictionary<string, int>> GetTestIds(ICollection<string> names, bool autoCreate)
         {
-            var existing = await _context.Tests.Where(x => names.Contains(x.Name)).ToDictionaryAsync(x => x.Name, y => y.Id);
+            var existing = await _context.Tests.Where(x => names.Contains(x.Name)).ToDictionaryAsync(x => x.Name.ToLowerInvariant(), y => y.Id);
             if (!autoCreate || existing.Count == names.Count) return existing;
 
-            var newTests = names.Where(x => !existing.ContainsKey(x))
+            var newTests = names.Where(x => !existing.ContainsKey(x.ToLowerInvariant()))
                 .Select(name => new Test {Name = name}).ToList();
             await _context.Tests.AddRangeAsync(newTests);
             await _context.SaveChangesAsync();
 
             foreach (var newTest in newTests)
             {
-                existing.Add(newTest.Name, newTest.Id);
+                existing.Add(newTest.Name.ToLowerInvariant(), newTest.Id);
             }
 
             return existing;

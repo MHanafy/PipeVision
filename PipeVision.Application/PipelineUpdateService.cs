@@ -42,12 +42,14 @@ namespace PipeVision.Application
                 {
                     var existingPipeline = await _pipelineRepository.GetPipeline(pipeline.Id);
                     _logger.LogInformation($"Analyzing pipeline {pipeline.Name} instance {pipeline.Counter}");
+                    var ignoredJobs = new List<PipelineJob>();
                     foreach (var job in pipeline.PipelineJobs)
                     {
                         var existingJob = existingPipeline?.PipelineJobs?.FirstOrDefault(x => x.Id == job.Id);
                         if (existingJob!=null && existingJob.LogStatus != LogStatus.NotFound && existingJob.LogStatus != LogStatus.Unknown)
                         {
                             _logger.LogInformation($"Skipping stage {job.StageName} - job {job.Name}, Already analyzed.");
+                            ignoredJobs.Add(job);
                             continue;
                         }
                         _logger.LogInformation($"Analyzing stage {job.StageName} - job {job.Name}");
@@ -108,6 +110,12 @@ namespace PipeVision.Application
                         if (job.LogStatus == LogStatus.Parsed && job.Tests.Count == 0)
                             job.LogStatus = LogStatus.NotTestsFound;
 
+                    }
+
+                    //Remove all non-updated jobs
+                    foreach (var job in ignoredJobs)
+                    {
+                        pipeline.PipelineJobs.Remove(job);
                     }
                 }
 
