@@ -18,6 +18,7 @@
   <ItemGroup>
     <PackageReference Include="automapper" Version="8.0.0" />
     <PackageReference Include="automapper.extensions.microsoft.dependencyinjection" Version="6.0.0" />
+    <PackageReference Include="BuildBundlerMinifier" Version="2.8.391" />
     <PackageReference Include="Microsoft.AspNetCore.App" />
     <PackageReference Include="Microsoft.AspNetCore.Razor.Design" Version="2.2.0" PrivateAssets="All" />
     <PackageReference Include="microsoft.entityframeworkcore" Version="2.2.1" />
@@ -28,6 +29,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\GoPipeline\PipeVision.GoPipeline.csproj" />
     <ProjectReference Include="..\PipeVision.Application\PipeVision.Application.csproj" />
     <ProjectReference Include="..\PipeVision.Data\PipeVision.Data.csproj" />
   </ItemGroup>

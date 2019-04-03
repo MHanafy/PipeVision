@@ -9,6 +9,7 @@ using Microsoft.Extensions.DependencyInjection;
 using PipeVision.Application;
 using PipeVision.Data;
 using PipeVision.Domain;
+using PipeVision.GoPipeline;
 
 namespace PipeVision.Web
 {
@@ -44,7 +45,7 @@ namespace PipeVision.Web
             services.AddScoped<IPipelineRepository, PipelineRepository>();
             services.AddScoped<ITestRepository, TestRepository>();
             services.AddScoped<IPipelineService, PipelineService>();
-
+            services.AddTransient<IPipelineUrlResolver, GoPipelineUrlResolver>();
             services.AddSingleton<ITimerService, TimerService>();
         }
 

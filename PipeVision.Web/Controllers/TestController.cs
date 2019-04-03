@@ -25,8 +25,8 @@ namespace PipeVision.Web.Controllers
         public IActionResult Index()
         {
             //Failing tests are populated by the CacheHelper
-            var failingTests = _cache.Get(CacheHelper.FailingTestsKey) ?? new List<Test>();
-            return View(_mapper.Map<IEnumerable<TestViewModel>>(failingTests).OrderByDescending(x=>x.StartTime));
+            var failingTests = _cache.Get(CacheHelper.FailingTestsKey) ?? new List<TestViewModel>();
+            return View(failingTests);
         }
 
         public async Task<IActionResult> FailedRuns(string testName)

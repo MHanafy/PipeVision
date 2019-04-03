@@ -234,7 +234,8 @@ namespace PipeVisionConsole
                 .AddScoped<IPipelineArchiveRepository, PipelineArchiveRepository>()
                 .AddScoped<IPipelineUpdateService, PipelineUpdateService>()
                 .AddTransient<IWhiteStackLogParser, WhiteStackLogParser>()
-                .AddTransient<IMsTestLogParser, MsTestLogParser>();
+                .AddTransient<IMsTestLogParser, MsTestLogParser>()
+                .AddTransient<IPipelineUrlResolver, GoPipelineUrlResolver>();
 
             var provider = services.BuildServiceProvider();
             var parsers = new List<ITestLogParser>
@@ -242,7 +243,8 @@ namespace PipeVisionConsole
 
             services.AddSingleton<IList<ITestLogParser>>(parsers);
             services.AddSingleton<IPipelineProvider>(new GoPipelineProvider(_config.GoServerBaseAddress,
-                _config.GoServerUser, _config.GoServerPass, provider.GetService<ILogger<GoPipelineProvider>>()));
+                _config.GoServerUser, _config.GoServerPass, provider.GetService<ILogger<GoPipelineProvider>>(),
+                provider.GetService<IPipelineUrlResolver>()));
             return services.BuildServiceProvider();
         }
     }

@@ -21,8 +21,12 @@ namespace PipeVision.Web.Models
         public string Error { get; set; }
         public string JobName { get; set; }
         public string StageName { get; set; }
+        public int StageRun { get; set; }
         public string PipelineName { get; set; }
+        public int PipelineRun { get; set; }
         public DateTime StartTime { get; set; }
+        public string JobLogUrl { get; set; }
+        public string JobUrl { get; set; }
     }
 
     public class ChangeListViewModel

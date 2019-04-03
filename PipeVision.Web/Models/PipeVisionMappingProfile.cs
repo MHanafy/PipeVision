@@ -14,6 +14,8 @@ namespace PipeVision.Web.Models
                 .ForMember(dest => dest.StartTime, src => src.MapFrom(j => j.PipelineJob.StartDate))
                 .ForMember(dest => dest.PipelineName, src => src.MapFrom(j => j.PipelineJob.Pipeline.Name))
                 .ForMember(dest => dest.StageName, src => src.MapFrom(j => j.PipelineJob.StageName))
+                .ForMember(dest => dest.PipelineRun, src => src.MapFrom(j => j.PipelineJob.Pipeline.Counter))
+                .ForMember(dest => dest.StageRun, src => src.MapFrom(j => j.PipelineJob.StageCounter))
                 .ForMember(dest => dest.StartTime, src => src.MapFrom(j => j.PipelineJob.StartDate));
 
             CreateMap<ChangeList, ChangeListViewModel>();

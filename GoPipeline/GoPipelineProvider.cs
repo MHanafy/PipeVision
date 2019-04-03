@@ -17,16 +17,14 @@ namespace PipeVision.GoPipeline
     public class GoPipelineProvider : IPipelineProvider
     {
         private readonly ILogger<GoPipelineProvider> _logger;
+        private readonly IPipelineUrlResolver _urlResolver;
         private readonly HttpClient _client;
-
-        private const string PipelineHistoryUrl = "api/pipelines/{pipelineName}/history/{offset}";
-        private const string PipelineInstanceUrl = "api/pipelines/{pipelineName}/instance/{id}";
-        private const string PipelineJobLogUrl = "files/{pipelineName}/{pipelineInstance}/{stageName}/{stageId}/{jobName}/cruise-output/console.log";
         private readonly GoJobLogParser _logParser;
 
-        public GoPipelineProvider(string goBaseAddress, string userName, string pass, ILogger<GoPipelineProvider> logger)
+        public GoPipelineProvider(string goBaseAddress, string userName, string pass, ILogger<GoPipelineProvider> logger, IPipelineUrlResolver urlResolver)
         {
             _logger = logger;
+            _urlResolver = urlResolver;
             _logParser = new GoJobLogParser(logger);
             _client = new HttpClient {BaseAddress = new Uri(goBaseAddress)};
             var byteArray = Encoding.ASCII.GetBytes($"{userName}:{pass}");
@@ -45,9 +43,7 @@ namespace PipeVision.GoPipeline
             int currentMinId;
             do
             {
-                var url = PipelineHistoryUrl.Replace("{pipelineName}", pipelineName)
-                    .Replace("{offset}", offset.ToString());
-
+                var url = _urlResolver.GetPipelineHistoryUrl(pipelineName, offset);
                 var jsonResult = await _client.GetAsync(url);
 
                 var pagedHistory =
@@ -88,11 +84,11 @@ namespace PipeVision.GoPipeline
             {
 
                 var pipeInfo = Regex.Match(revision.modifications[0].revision, @"^(?'pipeline'.+)\/(?'id'\d+)\/");
-                var url = PipelineInstanceUrl.Replace("{pipelineName}", pipeInfo.Groups["pipeline"].Value)
-                    .Replace("{id}", pipeInfo.Groups["id"].Value);
+                var url = _urlResolver.GetPipelineRunUrl(pipeInfo.Groups["pipeline"].Value,
+                    int.Parse(pipeInfo.Groups["id"].Value));
 
                 var jsonResult = _client.GetAsync(url).Result;
-                var buildCause = JsonConvert.DeserializeObject<global::PipeVision.GoPipeline.JsonResults.Pipeline>(
+                var buildCause = JsonConvert.DeserializeObject<JsonResults.Pipeline>(
                     await jsonResult.Content.ReadAsStringAsync()).build_cause;
                 result.AddRange(await GetChangeLists(buildCause));
             }
@@ -103,11 +99,7 @@ namespace PipeVision.GoPipeline
         public async Task<string> GetJobLog(string pipelineName, int instanceId, string stageName, int stageId,
             string jobName)
         {
-            string url = PipelineJobLogUrl.Replace("{pipelineName}", pipelineName)
-                .Replace("{pipelineInstance}", instanceId.ToString())
-                .Replace("{stageName}", stageName)
-                .Replace("{stageId}", stageId.ToString())
-                .Replace("{jobName}", jobName);
+            var url = _urlResolver.GetPipelineJobLogUrl(pipelineName, instanceId, stageName, stageId, jobName);
             try
             {
                 return await _client.GetStringAsync(url);
