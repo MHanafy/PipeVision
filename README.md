@@ -1,4 +1,3 @@
-https://github.com/MHanafy/PipeVision/blob/develop/docs/Architecture.PNG
 # PipeVision
 Pipelines are amazing in enabling agile development, making continuous deployment possible.
 As software projects grow in complexity, as the number of tests increase, and pipelines grow and become less maintainable.
