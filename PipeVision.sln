@@ -27,6 +27,13 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PipeVision.Application.Test
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{44EA0FE3-8A03-4411-B7B4-DFD82F4DAD31}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Docs", "Docs", "{EF0AAFBF-9574-4FF1-9396-7837CBB2096F}"
+	ProjectSection(SolutionItems) = preProject
+		Docs\Architecture.PNG = Docs\Architecture.PNG
+		Docs\TestFailedRuns.PNG = Docs\TestFailedRuns.PNG
+		Docs\TestsSummary.PNG = Docs\TestsSummary.PNG
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
