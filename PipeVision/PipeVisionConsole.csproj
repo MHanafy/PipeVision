@@ -24,18 +24,18 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="automapper" Version="8.0.0" />
-    <PackageReference Include="automapper.extensions.microsoft.dependencyinjection" Version="6.0.0" />
-    <PackageReference Include="mcmaster.Extensions.CommandLineUtils" Version="2.3.2" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="2.2.1" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="2.2.1">
+    <PackageReference Include="automapper" Version="8.1.1" />
+    <PackageReference Include="automapper.extensions.microsoft.dependencyinjection" Version="6.1.1" />
+    <PackageReference Include="mcmaster.Extensions.CommandLineUtils" Version="2.3.4" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="2.2.4" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="2.2.4">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
     </PackageReference>
     <PackageReference Include="microsoft.extensions.logging" Version="2.2.0" />
-    <PackageReference Include="newtonsoft.json" Version="12.0.1" />
-    <PackageReference Include="nlog" Version="4.5.11" />
-    <PackageReference Include="nlog.extensions.logging" Version="1.4.0" />
+    <PackageReference Include="newtonsoft.json" Version="12.0.2" />
+    <PackageReference Include="nlog" Version="4.6.5" />
+    <PackageReference Include="nlog.extensions.logging" Version="1.5.1" />
   </ItemGroup>
 
   <ItemGroup>

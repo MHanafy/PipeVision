@@ -16,16 +16,16 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="automapper" Version="8.0.0" />
-    <PackageReference Include="automapper.extensions.microsoft.dependencyinjection" Version="6.0.0" />
-    <PackageReference Include="BuildBundlerMinifier" Version="2.8.391" />
+    <PackageReference Include="automapper" Version="8.1.1" />
+    <PackageReference Include="automapper.extensions.microsoft.dependencyinjection" Version="6.1.1" />
+    <PackageReference Include="BuildBundlerMinifier" Version="2.9.406" />
     <PackageReference Include="Microsoft.AspNetCore.App" />
     <PackageReference Include="Microsoft.AspNetCore.Razor.Design" Version="2.2.0" PrivateAssets="All" />
-    <PackageReference Include="microsoft.entityframeworkcore" Version="2.2.1" />
-    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.2.0" />
-    <PackageReference Include="nlog" Version="4.5.11" />
-    <PackageReference Include="nlog.Extensions.Logging" Version="1.4.0" />
-    <PackageReference Include="nlog.web.aspnetcore" Version="4.8.0" />
+    <PackageReference Include="microsoft.entityframeworkcore" Version="2.2.4" />
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.2.3" />
+    <PackageReference Include="nlog" Version="4.6.5" />
+    <PackageReference Include="nlog.Extensions.Logging" Version="1.5.1" />
+    <PackageReference Include="nlog.web.aspnetcore" Version="4.8.3" />
   </ItemGroup>
 
   <ItemGroup>
