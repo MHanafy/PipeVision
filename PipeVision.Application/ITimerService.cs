@@ -1,9 +1,8 @@
-﻿using System.Threading;
-
+﻿
 namespace PipeVision.Application
 {
     public interface ITimerService
     {
-        void Schedule(TimerCallback func, int interval);
+        void Schedule(TimerService.TimerDelegate func, int interval, string desc);
     }
 }
