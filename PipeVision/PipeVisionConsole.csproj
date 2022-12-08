@@ -33,7 +33,7 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
     </PackageReference>
     <PackageReference Include="microsoft.extensions.logging" Version="2.2.0" />
-    <PackageReference Include="newtonsoft.json" Version="12.0.1" />
+    <PackageReference Include="newtonsoft.json" Version="13.0.2" />
     <PackageReference Include="nlog" Version="4.5.11" />
     <PackageReference Include="nlog.extensions.logging" Version="1.4.0" />
   </ItemGroup>
